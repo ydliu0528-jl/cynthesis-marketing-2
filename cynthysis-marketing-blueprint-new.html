@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cynthysis — Marketing Strategy Blueprint v2</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --fg2: #555;
+    --fg3: #888;
+    --border: #e5e5e5;
+    --border2: #d0d0d0;
+    --surface: #f7f7f5;
+    --surface2: #f0f0ec;
+    --amber: #BA7517;
+    --amber-bg: #FAEEDA;
+    --amber-text: #633806;
+    --teal: #0F6E56;
+    --teal-bg: #E1F5EE;
+    --teal-text: #085041;
+    --purple: #534AB7;
+    --purple-bg: #EEEDFE;
+    --purple-text: #26215C;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --blue-text: #042C53;
+    --gold: #c9a84c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* ── Typography ── */
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #BA7517; letter-spacing: -.01em; text-align: center; }
+  h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+  h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--fg); }
+  p  { color: var(--fg2); margin-bottom: 8px; }
+  b  { font-weight: 600; color: var(--fg); }
+
+  /* ── Header ── */
+  .doc-header {
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+  .doc-meta {
+    font-size: 12px;
+    color: var(--fg3);
+    margin-bottom: 16px;
+  }
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .kpi-val { font-size: 17px; font-weight: 700; color: var(--fg); }
+  .kpi-lbl { font-size: 11px; color: var(--fg3); margin-top: 3px; line-height: 1.4; }
+
+  /* ── Section label ── */
+  .sec-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--fg3);
+    font-weight: 600;
+    margin: 14px 0 8px;
+  }
+
+  /* ── Pricing strip ── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .price-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--bg);
+    position: relative;
+  }
+  .price-card.featured { border: 2px solid var(--amber); }
+  .pc-badge {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--amber);
+    color: #fff8ee;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--fg3); margin-bottom: 4px; }
+  .pc-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .pc-price { font-size: 28px; font-weight: 700; color: var(--fg); margin-bottom: 3px; }
+  .pc-early {
+    display: inline-block;
+    font-size: 11px;
+    background: var(--amber-bg);
+    color: var(--amber-text);
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .pc-desc { font-size: 12px; color: var(--fg2); line-height: 1.5; }
+
+  /* ── Phase timeline ── */
+  .phase { display: grid; grid-template-columns: 110px 1fr; gap: 0; margin-bottom: 0; }
+  .phase-label { padding-right: 16px; padding-top: 4px; }
+  .phase-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .badge-amber  { background: var(--amber-bg);  color: var(--amber-text); }
+  .badge-teal   { background: var(--teal-bg);   color: var(--teal-text); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+  .badge-blue   { background: var(--blue-bg);   color: var(--blue-text); }
+
+  .phase-period { font-size: 12px; color: var(--fg3); line-height: 1.6; }
+  .phase-period strong { display: block; margin-top: 6px; font-size: 12px; color: var(--fg2); }
+
+  .phase-body {
+    border-left: 2px solid var(--border);
+    padding: 0 0 32px 24px;
+    position: relative;
+  }
+  .phase-body.amber-line  { border-color: #EF9F27; }
+  .phase-body.teal-line   { border-color: #1D9E75; }
+  .phase-body.purple-line { border-color: #7F77DD; }
+  .phase-body.blue-line   { border-color: #378ADD; }
+  .phase-body.last        { padding-bottom: 0; }
+
+  .phase-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    position: absolute;
+    left: -6.5px; top: 4px;
+    border: 2px solid var(--bg);
+  }
+  .dot-amber  { background: #EF9F27; }
+  .dot-teal   { background: #1D9E75; }
+  .dot-purple { background: #7F77DD; }
+  .dot-blue   { background: #378ADD; }
+
+  .phase-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+
+  /* ── Pills ── */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .pill {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+  .pill-amber  { background: var(--amber-bg);  color: var(--amber-text);  border-color: #FAC775; }
+  .pill-teal   { background: var(--teal-bg);   color: var(--teal-text);   border-color: #9FE1CB; }
+  .pill-purple { background: var(--purple-bg); color: var(--purple-text); border-color: #AFA9EC; }
+  .pill-blue   { background: var(--blue-bg);   color: var(--blue-text);   border-color: #85B7EB; }
+
+  /* ── Two / Three col grids ── */
+  .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+
+  .inner-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .ic-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--fg3);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .ic-body { font-size: 12px; color: var(--fg2); line-height: 1.5; }
+
+  /* ── Action list ── */
+  .action-list { list-style: none; margin-bottom: 14px; }
+  .action-list li {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .action-list li:last-child { border-bottom: none; }
+  .al-icon { font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; color: var(--bg); background: var(--fg3); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  .al-text { font-size: 13px; color: var(--fg2); line-height: 1.6; }
+
+  /* ── Milestone chips ── */
+  .ms-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ms-chip {
+    font-size: 11px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    color: var(--fg2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .ms-chip::before {
+    content: "✓";
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  /* ── Flywheel ── */
+  .flywheel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 24px;
+  }
+  .flywheel h3 { margin-bottom: 12px; }
+  .fw-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+  .fw-step {
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 11px;
+    color: var(--fg2);
+  }
+  .fw-arrow { color: var(--fg3); font-size: 13px; }
+
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* ── Print hint ── */
+  .edit-note {
+    font-size: 11px;
+    color: var(--fg3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 28px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     HEADER
+════════════════════════════════ -->
+<div class="doc-header">
+  <h1>Cynthysis — Marketing Strategy Blueprint</h1>
+
+
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-val">¥0 / 59 / 99</div>
+      <div class="kpi-lbl">三层定价体系<br>钩子 / 星合 / 套餐</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">¥19.9 / 39</div>
+      <div class="kpi-lbl">早鸟价<br>6月30日截止</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">500+</div>
+      <div class="kpi-lbl">7月末<br>累计付费目标</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">30%</div>
+      <div class="kpi-lbl">口碑裂变<br>目标占比</div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- ════════════════════════════════
+     PRICING
+════════════════════════════════ -->
+<div class="sec-label">定价体系</div>
+<div class="pricing-grid">
+
+  <div class="price-card">
+    <div class="pc-tag">免费钩子</div>
+    <div class="pc-name">单点洞察</div>
+    <div class="pc-price">¥0</div>
+    <div class="pc-desc">输入出生信息 → 一条有组合逻辑的精准洞察。打破"泛化描述"不信任感，转化入口在洞察之后。</div>
+  </div>
+
+  <div class="price-card featured">
+    <div class="pc-badge">主力产品</div>
+    <div class="pc-tag">星盘报告</div>
+    <div class="pc-name">星合 · 完整解读</div>
+    <div class="pc-price">¥59</div>
+    <div class="pc-early">早鸟 ¥19.9 · 6月限定</div>
+    <div class="pc-desc">六大synthesis主题 + 原型揭示 + 星座图 + 可分享原型卡。¥59处于"认真但不贵"的感知甜蜜点。</div>
+  </div>
+
+  <div class="price-card">
+    <div class="pc-tag">完整套餐</div>
+    <div class="pc-name">星合 + 流年</div>
+    <div class="pc-price">¥99</div>
+    <div class="pc-early">早鸟 ¥39 · 6月限定</div>
+    <div class="pc-desc">流年报告随套餐首购一并拿走。¥99在套餐语境下感知是"合算"而非"贵"——锚点变了。</div>
+  </div>
+
+</div>
+
+
+<!-- ════════════════════════════════
+     PHASE 0
+════════════════════════════════ -->
+<div class="phase">
+  <div class="phase-label">
+    <div class="phase-badge badge-amber">Phase 0</div>
+    <div class="phase-period">
+      6月14日<br>↓<br>6月30日
+      <strong>蓄势期</strong>
+    </div>
+  </div>
+  <div class="phase-body amber-line">
+    <div class="phase-dot dot-amber"></div>
+    <div class="phase-title">种草 · 早鸟 · 内测征集</div>
+
+    <div class="pill-row">
+      <span class="pill pill-amber">小红书入驻</span>
+      <span class="pill pill-amber">场景化内容 ×5–8篇</span>
+      <span class="pill pill-amber">早鸟 ¥19.9 / ¥39</span>
+      <span class="pill pill-amber">第二轮内测50人</span>
+      <span class="pill pill-amber">反馈素材收集</span>
+    </div>
+
+    <div class="sec-label">内容节奏（小红书）</div>
+    <div class="two-col">
+      <div class="inner-card">
+        <div class="ic-label">第1篇 — 入驻帖</div>
+        <div class="ic-body">不写"我们是谁"，先写<b>一个强共鸣的场景句</b>，中间引出Cynthysis的存在，结尾挂候补链接。配Prototype D截图，让视觉先说话。</div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">第2–8篇 — 场景化内容</div>
+        <div class="ic-body">具体困惑切入："<b>为什么我在职场付出很多却不被看见</b>"、"<b>我总是选择需要我拯救的人</b>"、"<b>换了三次行业还是感觉不对</b>"。每篇文末轻挂候补。</div>
+      </div>
+    </div>
+
+    <div class="sec-label">早鸟机制</div>
+    <div class="two-col">
+      <div class="inner-card">
+        <div class="ic-label">仅对候补名单开放</div>
+        <div class="ic-body">不公开投放。星合早鸟 <b>¥19.9</b>，套餐早鸟 <b>¥39</b>。限额100单，明确告知7月1日恢复正价¥59 / ¥99。</div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">第二轮内测（同步）</div>
+        <div class="ic-body">限额50人，0元或极低价换取详细反馈。<b>筛选有表达欲的用户</b>——他们是后续UGC和口碑传播的种子。</div>
+      </div>
+    </div>
+
+    <div class="sec-label">里程碑</div>
+    <div class="ms-row">
+      <div class="ms-chip">小红书 ≥3篇内容发布</div>
+      <div class="ms-chip">候补名单 ≥200人</div>
+      <div class="ms-chip">早鸟成交 ≥50单</div>
+      <div class="ms-chip">可用反馈截图 ≥10条</div>
+      <div class="ms-chip">账号人设清晰建立</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     PHASE 1
+════════════════════════════════ -->
+<div class="phase" style="margin-top: 0;">
+  <div class="phase-label">
+    <div class="phase-badge badge-teal">Phase 1</div>
+    <div class="phase-period">
+      7月<br>↓<br>8月
+      <strong>冷启动期</strong>
+    </div>
+  </div>
+  <div class="phase-body teal-line">
+    <div class="phase-dot dot-teal"></div>
+    <div class="phase-title">正式上线 · 口碑引爆 · 裂变启动</div>
+
+    <div class="pill-row">
+      <span class="pill pill-teal">7月1日正式上线</span>
+      <span class="pill pill-teal">免费单点洞察钩子</span>
+      <span class="pill pill-teal">原型卡上线</span>
+      <span class="pill pill-teal">裂变机制</span>
+      <span class="pill pill-teal">UGC收集</span>
+      <span class="pill pill-teal">内容持续输出</span>
+    </div>
+
+    <div class="sec-label">核心动作</div>
+    <ul class="action-list">
+      <li>
+        <span class="al-icon">1</span>
+        <span class="al-text"><b>7月1–7日：定向首发。</b>向早鸟名单发送优先购买权，首周不做公开广告。制造"你是第一批人"的归属感——早鸟用户的体验和反馈决定后续口碑质量。</span>
+      </li>
+      <li>
+        <span class="al-icon">2</span>
+        <span class="al-text"><b>免费单点洞察作为常驻钩子。</b>小红书评论区/私信引流到落地页 → 输入出生信息 → 一条精准洞察 → 引导购买完整星合。这是漏斗最顶层、ROI最高的动作。洞察文案必须够具体，不能是泛化的太阳星座描述。</span>
+      </li>
+      <li>
+        <span class="al-icon">3</span>
+        <span class="al-text"><b>星盘原型卡上线。</b>报告完成后自动生成。设计去除一切商业感——看起来像"内容"不像"收据"：深色底、金色星象符号、一句原型描述句、Cynthysis水印轻且美。文案是"你的星盘原型是___"而非"我买了___"。</span>
+      </li>
+      <li>
+        <span class="al-icon">4</span>
+        <span class="al-text"><b>裂变钩子。</b>分享原型卡后可获得好友专属折扣码（非优惠券，是"送给朋友的¥X优惠"）。<b>分享动作设计在原型揭示的情绪峰值之后</b>，不在付费前。让分享动机是"这说中了我"，而不是"我在推广"。</span>
+      </li>
+      <li>
+        <span class="al-icon">5</span>
+        <span class="al-text"><b>内容节奏：每周2–3篇。</b>前两周仍以场景化内容为主；第三周起开始混入<b>用户反馈截图</b>（需授权）。格式从"痛点场景"逐步转向"这个用户的___被看见了"——这类内容在小红书的信任转化率远高于产品介绍。</span>
+      </li>
+    </ul>
+
+    <div class="sec-label">阶段目标</div>
+    <div class="three-col">
+      <div class="inner-card">
+        <div class="ic-label">7月末</div>
+        <div class="ic-body">累计付费用户 <b>≥200单</b><br>裂变来源占比开始可测量</div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">8月末</div>
+        <div class="ic-body">累计付费用户 <b>≥500单</b><br>裂变来源占比 <b>≥20%</b></div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">核心验证问题</div>
+        <div class="ic-body">原型卡是否自发传播？<br>哪类场景内容转化最高？</div>
+      </div>
+    </div>
+
+    <div class="sec-label">里程碑</div>
+    <div class="ms-row">
+      <div class="ms-chip">7月1日正式上线</div>
+      <div class="ms-chip">免费钩子落地页上线</div>
+      <div class="ms-chip">原型卡生成功能上线</div>
+      <div class="ms-chip">首批UGC素材 ≥20条</div>
+      <div class="ms-chip">累计付费 ≥500单（8月末）</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     PHASE 2
+════════════════════════════════ -->
+<div class="phase" style="margin-top: 0;">
+  <div class="phase-label">
+    <div class="phase-badge badge-purple">Phase 2</div>
+    <div class="phase-period">
+      9月<br>↓<br>10月
+      <strong>增长期</strong>
+    </div>
+  </div>
+  <div class="phase-body purple-line">
+    <div class="phase-dot dot-purple"></div>
+    <div class="phase-title">放大有效信号 · UGC池 · 社群建立</div>
+
+    <div class="pill-row">
+      <span class="pill pill-purple">数据复盘</span>
+      <span class="pill pill-purple">UGC池运营</span>
+      <span class="pill pill-purple">腰部博主自然合作</span>
+      <span class="pill pill-purple">用户社群建立</span>
+      <span class="pill pill-purple">内容矩阵扩展</span>
+    </div>
+
+    <div class="sec-label">核心逻辑：先找到有效信号，再放大</div>
+    <ul class="action-list">
+      <li>
+        <span class="al-icon">1</span>
+        <span class="al-text"><b>9月第一周：数据复盘。</b>哪篇内容转化率最高？哪类用户分享了原型卡？哪个场景钩子带来的用户留存更好？用数据决定9–10月的内容方向，不凭感觉。</span>
+      </li>
+      <li>
+        <span class="al-icon">2</span>
+        <span class="al-text"><b>UGC池主动运营。</b>主动联系内测和早期用户，征集授权截图和自发小红书帖子。目标是建立 <b>20–30条有具体细节的真实反馈库</b>。这是信任建立的核心素材，也是后续任何KOL合作的底气。</span>
+      </li>
+      <li>
+        <span class="al-icon">3</span>
+        <span class="al-text"><b>建立小型用户社群。</b>微信群或小红书群聊，不做高压运营，只提供"同类人聚集"的空间。占星用户天然有社交需求——这是口碑的温床，也是年末活动的触达渠道。</span>
+      </li>
+    </ul>
+
+    <div class="sec-label">阶段目标</div>
+    <div class="three-col">
+      <div class="inner-card">
+        <div class="ic-label">累计付费</div>
+        <div class="ic-body">9–10月新增 <b>≥300单</b><br>累计突破 <b>800单</b></div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">UGC与口碑</div>
+        <div class="ic-body">可用真实素材 <b>≥30条</b><br>裂变占比 <b>≥25%</b></div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">社群</div>
+        <div class="ic-body">核心用户群 <b>≥100人</b><br>活跃率 <b>≥40%</b></div>
+      </div>
+    </div>
+
+    <div class="sec-label">里程碑</div>
+    <div class="ms-row">
+      <div class="ms-chip">数据复盘完成，方向确认</div>
+      <div class="ms-chip">UGC素材库 ≥30条</div>
+      <div class="ms-chip">社群建立，核心用户 ≥100</div>
+      <div class="ms-chip">首次腰部博主自然合作（可选）</div>
+      <div class="ms-chip">累计付费 ≥800单</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     PHASE 3
+════════════════════════════════ -->
+<div class="phase" style="margin-top: 0;">
+  <div class="phase-label">
+    <div class="phase-badge badge-blue">Phase 3</div>
+    <div class="phase-period">
+      11月<br>↓<br>次年1月
+      <strong>规模化期</strong>
+    </div>
+  </div>
+  <div class="phase-body blue-line last">
+    <div class="phase-dot dot-blue"></div>
+    <div class="phase-title">年末借势 · 流年爆发窗口 · 品牌沉淀</div>
+
+    <div class="pill-row">
+      <span class="pill pill-blue">年末情绪借势</span>
+      <span class="pill pill-blue">流年报告主推</span>
+      <span class="pill pill-blue">元旦/春节峰值</span>
+      <span class="pill pill-blue">老用户激活</span>
+      <span class="pill pill-blue">品牌叙事升级</span>
+    </div>
+
+    <div class="sec-label">关键时间窗口</div>
+    <ul class="action-list">
+      <li>
+        <span class="al-icon">1</span>
+        <span class="al-text"><b>11–12月：年末情绪借势。</b>"年底了，你这一年在哪些地方委屈了自己"——这类内容在年末情绪共鸣极强，收藏率和转发率高。星合报告作为<b>"送给自己的年终礼物"</b>包装，这是获客窗口而非促销节点。</span>
+      </li>
+      <li>
+        <span class="al-icon">2</span>
+        <span class="al-text"><b>元旦前后：流年报告的爆发窗口。</b>这是占星类产品一年中转化率最高的时间节点。<b>提前4–6周（即11月中下旬）开始预热</b>，节点当天限时优惠，利用社群做二次传播。内容方向从"了解自己"转向"看见2027年的你"。</span>
+      </li>
+      <li>
+        <span class="al-icon">3</span>
+        <span class="al-text"><b>老用户激活：流年作为自然续费触点。</b>对7–8月的早期用户，年末是天然的回归时机。设计个性化Push："你的2026年土星回归进展如何？2027年的流年已更新。"<b>让续费感觉像服务延续，不像二次销售。</b></span>
+      </li>
+      <li>
+        <span class="al-icon">4</span>
+        <span class="al-text"><b>品牌叙事升级。</b>经过半年积累，这个阶段Cynthysis应该已经有了足够的真实用户故事。开始从"功能介绍"转向<b>品牌叙事</b>——不是"我们的产品做什么"，而是"用了Cynthysis之后，这些人的生活发生了什么"。</span>
+      </li>
+    </ul>
+
+    <div class="sec-label">阶段目标</div>
+    <div class="three-col">
+      <div class="inner-card">
+        <div class="ic-label">累计付费（1月末）</div>
+        <div class="ic-body">目标 <b>≥1500单</b><br>含流年转化</div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">元旦峰值窗口</div>
+        <div class="ic-body">单月新增 <b>≥400单</b><br>流年带动客单价提升</div>
+      </div>
+      <div class="inner-card">
+        <div class="ic-label">品牌沉淀</div>
+        <div class="ic-body">小红书粉丝 <b>≥5000</b><br>社群 <b>≥300人</b></div>
+      </div>
+    </div>
+
+    <div class="sec-label">里程碑</div>
+    <div class="ms-row">
+      <div class="ms-chip">11月中旬开始流年预热内容</div>
+      <div class="ms-chip">元旦限时活动执行</div>
+      <div class="ms-chip">老用户激活Push发出</div>
+      <div class="ms-chip">品牌叙事内容 ≥5篇</div>
+      <div class="ms-chip">累计付费 ≥1500单（1月末）</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     FLYWHEEL
+════════════════════════════════ -->
+<div class="flywheel">
+  <h3>增长飞轮 — 贯穿全程</h3>
+  <div class="fw-steps">
+    <div class="fw-step">场景内容引流</div>
+    <span class="fw-arrow">→</span>
+    <div class="fw-step">免费单点洞察</div>
+    <span class="fw-arrow">→</span>
+    <div class="fw-step">付费星合报告</div>
+    <span class="fw-arrow">→</span>
+    <div class="fw-step">原型揭示情绪峰值</div>
+    <span class="fw-arrow">→</span>
+    <div class="fw-step">原型卡自发分享</div>
+    <span class="fw-arrow">→</span>
+    <div class="fw-step">好友折扣码裂变</div>
+    <span class="fw-arrow">→</span>
+    <div class="fw-step">新用户进入漏斗</div>
+  </div>
+</div>
+
+</body>
+</html>
